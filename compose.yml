@@ -1,14 +1,33 @@
 version: '3.6'
 
 services:
-  flask:
-    build: docker/back
+  db:
+    image: postgres:15
     ports:
-      - "5000:5000"
+      - "5432:5432"
     volumes:
-      - ./back:/app
+      - conerf_postgres:/var/lib/postgresql/data
     environment:
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
-      - FLASK_APP=main.py
-    command: flask run --host=0.0.0.0
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - conerf_network
+  web:
+    build: docker/back
+    # command: python3 manage.py runserver 0.0.0.0:8000
+    # command: uwsgi --ini uwsgi.ini
+    tty: true
+    volumes:
+      - ./back/django:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - conerf_network
+
+networks:
+  conerf_network:
+
+volumes:
+  conerf_postgres:

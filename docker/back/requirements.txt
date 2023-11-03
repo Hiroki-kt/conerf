@@ -1,1 +1,3 @@
-flask
+Django==4.2
+requests
+psycopg #psycopg3
