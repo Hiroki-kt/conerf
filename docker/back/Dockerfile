@@ -1,7 +1,8 @@
 FROM python:3.10
 
 RUN apt update && apt install -y \
-  tmux
+  tmux \
+  ffmpeg
 
 RUN pip install --upgrade pip
 RUN pip install --upgrade setuptools wheel
