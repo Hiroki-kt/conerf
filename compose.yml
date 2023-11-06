@@ -12,6 +12,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     networks:
       - conerf_network
+
   web:
     build: docker/back
     # command: python3 manage.py runserver 0.0.0.0:8000
@@ -24,6 +25,18 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      - conerf_network
+
+  nextjs:
+    build: docker/front
+    tty: true
+    volumes:
+      - ./front:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - web
     networks:
       - conerf_network
 
