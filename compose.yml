@@ -20,7 +20,7 @@ services:
     tty: true
     volumes:
       - ./back/django:/app
-      - /home/hiro/wd/conerf:/mnt
+      - ${MNT}:/mnt
     ports:
       - "8000:8000"
     depends_on:

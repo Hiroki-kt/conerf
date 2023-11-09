@@ -7,3 +7,9 @@ db.sqlite3
 
 ## Private key
 keys/
+
+## Mac
+.DS_Store
+
+## env
+.env
