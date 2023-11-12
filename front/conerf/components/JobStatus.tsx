@@ -13,7 +13,13 @@ const JobStatus = (props: JobStatusProps) => {
   const [statusOpen3, setStatusOpen3] = useState(false)
   const [statusOpen4, setStatusOpen4] = useState(false)
 
+  // useEffect(() => {
+  //   setStatus(props.status)
+  // }, [])
+
   useEffect(() => {
+    console.log(status)
+    // setStatus(props.status)
     if (status == '1') {
       setStatusOpen1(true)
     }
