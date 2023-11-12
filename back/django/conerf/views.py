@@ -8,8 +8,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .lib import GoogleDriveAccess
-from .models import Job
-from .serializers import JobSerializer
+from .models import Job, FileUpload
+from .serializers import JobSerializer, FileUploadSerializer
 
 gda = GoogleDriveAccess()
 
@@ -43,3 +43,7 @@ class JobViewSet(viewsets.ModelViewSet):
                 shell=True,
             )
         return Response(status=status.HTTP_200_OK)
+
+class FileUploadViewSet(viewsets.ModelViewSet):
+    queryset = FileUpload.objects.all().order_by("created_at")
+    serializer_class = FileUploadSerializer

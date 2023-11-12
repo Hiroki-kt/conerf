@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Job
+from .models import Job, FileUpload
 
 
 class JobSerializer(serializers.ModelSerializer):
@@ -15,4 +15,11 @@ class JobSerializer(serializers.ModelSerializer):
             "updated_at",
             "movies_url",
             "select_job",
+            "thumbnail",
         ]
+
+
+class FileUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileUpload
+        fields = ["id", "title", "file", "job", "created_at"]
