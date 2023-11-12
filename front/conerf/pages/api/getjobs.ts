@@ -7,7 +7,7 @@ export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
     const response = await fetch(url)
     return res.status(200).json(await response.json())
-    resolve()
+    // resolve()
   } catch (error) {
     console.error(error)
     return res.status(500).end()

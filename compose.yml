@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:15
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - conerf_postgres:/var/lib/postgresql/data
     environment:
@@ -22,7 +22,7 @@ services:
       - ./back/django:/app
       - ${MNT}:/mnt
     ports:
-      - "8000:8000"
+      - '8000:8000'
     depends_on:
       - db
     networks:
@@ -30,12 +30,12 @@ services:
 
   nextjs:
     build: docker/front
-    # command: yarn run dev
+    command: yarn run dev
     tty: true
     volumes:
-      - ./front:/app
+      - ./front/conerf:/app
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - web
     networks:
