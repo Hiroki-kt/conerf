@@ -32,7 +32,7 @@ const Job = (props: JobProps) => {
 
   return (
     <main className='w-full h-full'>
-      <div className='m-auto pt-36 w-4/5'>
+      <div className='m-auto w-4/5'>
         <div className='flex mt-7 mb-7 items-center'>
           <a href='/'>
             <ArrowBackIosNewIcon />

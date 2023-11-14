@@ -22,16 +22,16 @@ const App = () => {
 
   return (
     <main className='w-full h-full'>
-      <div className='m-auto pt-36 w-4/5'>
+      <div className='m-auto w-4/5'>
         <div className='w-full h-10 rounded-full border border-gray-700 flex items-center px-8 text-gray-700'>
           Sample....
         </div>
         <div className='text-3xl mt-7'>Your Jobs</div>
-        <div className='mt-5 flex flex-wrap justify-start gap-x-5'>
+        <div className='mt-5 flex flex-wrap justify-start gap-x-5 gap-y-7'>
           {jobs.map((job) => {
             const thumbail = `http://localhost:8000/${job.thumbnail}`
             return (
-              <div className='w-[200px] h-[200px]'>
+              <div className='w-[200px] h-[250px]'>
                 <a
                   href={`/job/${job.id}`}
                   className='block w-full rounded-3xl p-3 bg-gray-700'
