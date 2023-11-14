@@ -18,7 +18,7 @@ class Job(models.Model):
     ]
 
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, default="")
     status = models.CharField(
         choices=STATUS_CHOICES, max_length=2, default="downloading"
     )
@@ -26,7 +26,8 @@ class Job(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     movies_url = models.CharField(max_length=200, blank=True, default="")
     select_job = models.BooleanField(default=False)
-    thumbnail = models.CharField(max_length=200, default="static/images/noimage.png")
+    thumbnail = models.CharField(max_length=200, blank=True, default="static/images/noimage.png")
+    participants = models.IntegerField(default=0)
 
 class FileUpload(models.Model):
     title = models.CharField(max_length=100)

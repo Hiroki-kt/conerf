@@ -16,6 +16,7 @@ class JobSerializer(serializers.ModelSerializer):
             "movies_url",
             "select_job",
             "thumbnail",
+            "participants",
         ]
 
 
