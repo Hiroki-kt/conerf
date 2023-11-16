@@ -31,6 +31,6 @@ class Job(models.Model):
 
 class FileUpload(models.Model):
     title = models.CharField(max_length=100)
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    job = models.ForeignKey('conerf.Job', on_delete=models.CASCADE)
     file = models.FileField(upload_to=upload_to)
     created_at = models.DateTimeField(auto_now_add=True)

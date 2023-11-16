@@ -25,9 +25,9 @@ const JobStatus = (props: JobStatusProps) => {
       const file = e.target.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('title', file.name)
-      formData.append('job', jobId)
-      console.log(formData)
+      // formData.append('title', file.name)
+      formData.append('job_id', '1')
+      console.log(typeof formData)
       setFile(formData)
     }
   }

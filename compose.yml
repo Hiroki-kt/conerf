@@ -15,7 +15,7 @@ services:
 
   web:
     build: docker/back
-    command: python3 manage.py runserver 0.0.0.0:8000
+    # command: python3 manage.py runserver 0.0.0.0:8000
     # command: uwsgi --ini uwsgi.ini
     tty: true
     volumes:
@@ -30,7 +30,7 @@ services:
 
   nextjs:
     build: docker/front
-    command: yarn run dev
+    command: npm run dev
     tty: true
     volumes:
       - ./front/conerf:/app

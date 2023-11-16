@@ -3,8 +3,9 @@ import os
 import subprocess
 
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from .lib import GoogleDriveAccess
@@ -44,6 +45,17 @@ class JobViewSet(viewsets.ModelViewSet):
             )
         return Response(status=status.HTTP_200_OK)
 
-class FileUploadViewSet(viewsets.ModelViewSet):
+class FileUploadViewSet(generics.GenericAPIView):
     queryset = FileUpload.objects.all().order_by("created_at")
     serializer_class = FileUploadSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        job_id = request.data["job_id"]
+        job = get_object_or_404(Job, id=job_id)
+        files = request.FILES.getlist("file")
+        for file in files:
+            FileUpload.objects.create(
+                title=file.name, job=job, file=file
+            )
+        return Response(status=status.HTTP_201_CREATED)

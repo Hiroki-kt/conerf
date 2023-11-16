@@ -5,9 +5,10 @@ from .views import JobViewSet, FileUploadViewSet
 
 router = routers.DefaultRouter()
 router.register("jobs", JobViewSet)
-router.register("file_uploads", FileUploadViewSet)
+# router.register("file_uploads", FileUploadViewSet)
 
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("file_uploads/", FileUploadViewSet.as_view()),
 ]
