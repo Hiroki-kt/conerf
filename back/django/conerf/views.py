@@ -45,17 +45,6 @@ class JobViewSet(viewsets.ModelViewSet):
             )
         return Response(status=status.HTTP_200_OK)
 
-class FileUploadViewSet(generics.GenericAPIView):
+class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileUpload.objects.all().order_by("created_at")
     serializer_class = FileUploadSerializer
-    parser_classes = (MultiPartParser, FormParser)
-
-    def post(self, request, *args, **kwargs):
-        job_id = request.data["job_id"]
-        job = get_object_or_404(Job, id=job_id)
-        files = request.FILES.getlist("file")
-        for file in files:
-            FileUpload.objects.create(
-                title=file.name, job=job, file=file
-            )
-        return Response(status=status.HTTP_201_CREATED)

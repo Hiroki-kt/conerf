@@ -1,7 +1,10 @@
-Django==4.2
+celery==5.3.*
+Django==4.2.*
 djangorestframework
+flower==2.0.*
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
 psycopg #psycopg3
 requests
+redis==5.0.*

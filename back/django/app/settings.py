@@ -87,6 +87,36 @@ DATABASES = {
     }
 }
 
+# Cache server
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379",
+    }
+}
+
+# Celery configurations
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZZER = 'json'
+
+# 'amqp://guest:guest@localhost//'
+# celeryを動かすための設定ファイル
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_CACHE_BACKEND = "django-cache"
+CELERY_RESULT_EXTENDED = True
+
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+# CELERYD_CONCURRENCY=1なので、１こずつキューを捌いていく
+# ここはCPU数に合わせていくのがよい
+CELERYD_CONCURRENCY = 1
+
+CELERYD_LOG_FILE = "./celeryd.log"
+
+# CELERYD_LOG_LEVELをINFOにしておくと、
+# タスクの標準出力もログ(celeryd.log)に書かれる
+CELERYD_LOG_LEVEL = "INFO"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

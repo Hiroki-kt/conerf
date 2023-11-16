@@ -37,7 +37,7 @@ const JobStatus = (props: JobStatusProps) => {
     const url = '/api/postvideo'
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'multipart/form-data' },
+      // headers: { 'Content-Type': 'multipart/form-data' },
       body: file,
     })
     const data = await res.json()
