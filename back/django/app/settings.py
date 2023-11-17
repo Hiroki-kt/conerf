@@ -109,13 +109,11 @@ CELERY_RESULT_EXTENDED = True
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 # CELERYD_CONCURRENCY=1なので、１こずつキューを捌いていく
-# ここはCPU数に合わせていくのがよい
 CELERYD_CONCURRENCY = 1
 
 CELERYD_LOG_FILE = "./celeryd.log"
 
 # CELERYD_LOG_LEVELをINFOにしておくと、
-# タスクの標準出力もログ(celeryd.log)に書かれる
 CELERYD_LOG_LEVEL = "INFO"
 
 # Password validation

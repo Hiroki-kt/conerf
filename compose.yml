@@ -29,6 +29,37 @@ services:
     networks:
       - conerf_network
 
+  celery:
+    container_name: celery
+    tty: true
+    build: docker/back
+    volumes:
+      - ./back/django:/app
+      - ${MNT}:/mnt
+    # command: celery -A config worker -l info
+    command: celery -A app worker -l info
+    depends_on:
+      - web
+      - redis
+    networks:
+      - conerf_network
+
+  monitor:
+    container_name: monitor
+    tty: true
+    build: docker/back
+    volumes:
+      - ./back/django:/app
+      - ${MNT}:/mnt
+    ports:
+      - 5555:5555
+    command: celery -A app flower --port=5555
+    depends_on:
+      - web
+      - redis
+    networks:
+      - conerf_network
+
   nextjs:
     build: docker/front
     command: yarn run dev
