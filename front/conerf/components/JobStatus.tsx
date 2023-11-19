@@ -26,7 +26,7 @@ const JobStatus = (props: JobStatusProps) => {
       const formData = new FormData()
       formData.append('file', file)
       // formData.append('title', file.name)
-      formData.append('job_id', '1')
+      formData.append('job_id', jobId)
       console.log(typeof formData)
       setFile(formData)
     }
@@ -37,7 +37,6 @@ const JobStatus = (props: JobStatusProps) => {
     const url = '/api/postvideo'
     const res = await fetch(url, {
       method: 'POST',
-      // headers: { 'Content-Type': 'multipart/form-data' },
       body: file,
     })
     const data = await res.json()

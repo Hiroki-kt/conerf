@@ -36,7 +36,6 @@ services:
     volumes:
       - ./back/django:/app
       - ${MNT}:/mnt
-    # command: celery -A config worker -l info
     command: celery -A app worker -l info
     depends_on:
       - web

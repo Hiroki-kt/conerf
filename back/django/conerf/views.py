@@ -2,11 +2,13 @@ from glob import glob
 import os
 import subprocess
 
+from django_filters import rest_framework as filters
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .lib import GoogleDriveAccess
 from .models import Job, FileUpload
@@ -48,3 +50,16 @@ class JobViewSet(viewsets.ModelViewSet):
 class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileUpload.objects.all().order_by("created_at")
     serializer_class = FileUploadSerializer
+
+class FilterFile(filters.FilterSet):
+    job = filters.NumberFilter(field_name="job", lookup_expr="exact")
+
+    class Meta:
+        model = FileUpload
+        fields = ["job"]
+
+class ListFilesByJob(APIView):
+    def get(self, request):
+        filterset = FilterFile(request.query_params, queryset=FileUpload.objects.all())
+        serializer = FileUploadSerializer(instance=filterset.qs, many=True)
+        return Response(serializer.data)
