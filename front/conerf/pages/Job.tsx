@@ -39,7 +39,7 @@ const Job = (props: JobProps) => {
           </a>
           <div className='text-xl ml-3'>{job.title}</div>
         </div>
-        {job.length != 0 && <JobStatus status={job.status} />}
+        {job.length != 0 && <JobStatus status={job.status} jobId={props.id} />}
       </div>
     </main>
   )

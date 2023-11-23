@@ -48,6 +48,7 @@ const CreateJobDialog = () => {
     })
     const data = await res.json()
     console.log(data)
+    setOpen(false)
   }
 
   const handleClickOpen = () => {

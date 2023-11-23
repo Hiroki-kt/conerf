@@ -13,3 +13,6 @@ keys/
 
 ## env
 .env
+
+## venv
+venv/

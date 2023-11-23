@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'django_filters',
+    "django_filters",
     "conerf",
 ]
 
@@ -97,9 +97,9 @@ CACHES = {
 }
 
 # Celery configurations
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZZER = 'json'
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZZER = "json"
 
 # 'amqp://guest:guest@localhost//'
 # celeryを動かすための設定ファイル
@@ -107,7 +107,7 @@ CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_CACHE_BACKEND = "django-cache"
 CELERY_RESULT_EXTENDED = True
 
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = "redis://redis:6379"
 
 # CELERYD_CONCURRENCY=1なので、１こずつキューを捌いていく
 CELERYD_CONCURRENCY = 1
@@ -152,9 +152,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 
 # Default primary key field type
@@ -162,5 +160,5 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/mnt/'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/home/hiro/wd/conerf"

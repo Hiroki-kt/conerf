@@ -10,6 +10,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .tasks import ffmpeg, colmap, train, viwer
 from .lib import GoogleDriveAccess
 from .models import Job, FileUpload
 from .serializers import JobSerializer, FileUploadSerializer
@@ -35,21 +36,42 @@ class JobViewSet(viewsets.ModelViewSet):
             gda.download_file(file, f"{ORIGIN_VIDEO_DIR}/{pk}/{count}.MOV")
         return Response(status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["post"])
     def ffmpeg(self, request, pk=None):
-        os.makedirs(f"{IMAGE_DIR}/{pk}", exist_ok=True)
-        for file in glob(f"{ORIGIN_VIDEO_DIR}/{pk}/*.MOV"):
-            file_count = os.path.basename(file).split(".")[0]
-            output_file = f"{IMAGE_DIR}/{pk}/img_{file_count}_%04d.jpg"
-            subprocess.call(
-                f"ffmpeg -i {file} -vf framestep=1 -q:v 1 {output_file}",
-                shell=True,
-            )
+        if request.data["framerate"]:
+            framerate = request.data["framerate"]
+        else:
+            framerate = 5
+        queryset = Job.objects.all()
+        job = get_object_or_404(queryset, id=pk)
+        job.status = "2"
+        job.save()
+        ffmpeg.delay(pk, framerate)
         return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def colmap(self, request, pk=None):
+        queryset = Job.objects.all()
+        job = get_object_or_404(queryset, id=pk)
+        job.status = "4"
+        job.save()
+        colmap.delay(pk)
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def train(self, request, pk=None):
+        queryset = Job.objects.all()
+        job = get_object_or_404(queryset, id=pk)
+        job.status = "6"
+        job.save()
+        train.delay(pk)
+        return Response(status=status.HTTP_200_OK)
+
 
 class FileUploadViewSet(viewsets.ModelViewSet):
     queryset = FileUpload.objects.all().order_by("created_at")
     serializer_class = FileUploadSerializer
+
 
 class FilterFile(filters.FilterSet):
     job = filters.NumberFilter(field_name="job", lookup_expr="exact")
@@ -57,6 +79,7 @@ class FilterFile(filters.FilterSet):
     class Meta:
         model = FileUpload
         fields = ["job"]
+
 
 class ListFilesByJob(APIView):
     def get(self, request):

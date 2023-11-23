@@ -3,24 +3,6 @@
 import CreateJobDialog from '@/components/CreatJobDialog'
 
 const Header = () => {
-  const PostJob = async () => {
-    const form = {
-      title: 'Sample',
-      description: 'Sample',
-      status: '1',
-      movies_url: 'aaaaaaaaaaaa',
-    }
-    const res = await fetch('/api/postjobs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(form),
-    })
-    const data = await res.json()
-    console.log(data)
-  }
-
   return (
     <header className='h-36 w-full '>
       <div className='h-full w-4/5 m-auto flex items-center justify-between'>
