@@ -28,6 +28,7 @@ def ffmpeg(job_id: int, framerate=5) -> None:
     queryset = Job.objects.all()
     job = get_object_or_404(queryset, id=job_id)
     job.status = "3"
+    job.thumbnail = f"media/data/{job_id}/img_{serializer.data[0]['id']}_0001.jpg"
     job.save()
 
 

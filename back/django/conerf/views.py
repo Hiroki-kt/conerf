@@ -36,12 +36,14 @@ class JobViewSet(viewsets.ModelViewSet):
             gda.download_file(file, f"{ORIGIN_VIDEO_DIR}/{pk}/{count}.MOV")
         return Response(status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["get"])
     def ffmpeg(self, request, pk=None):
-        if request.data["framerate"]:
-            framerate = request.data["framerate"]
-        else:
-            framerate = 5
+        ## TODO: framerateをrequestから受け取る
+        # if request.data["framerate"]:
+        #     framerate = request.data["framerate"]
+        # else:
+        #     framerate = 5
+        framerate = 5
         queryset = Job.objects.all()
         job = get_object_or_404(queryset, id=pk)
         job.status = "2"
@@ -73,7 +75,7 @@ class FileUploadViewSet(viewsets.ModelViewSet):
     serializer_class = FileUploadSerializer
 
 
-class FilterFile(filters.FilterSet):
+class FileUploadFilter(filters.FilterSet):
     job = filters.NumberFilter(field_name="job", lookup_expr="exact")
 
     class Meta:
@@ -81,8 +83,8 @@ class FilterFile(filters.FilterSet):
         fields = ["job"]
 
 
-class ListFilesByJob(APIView):
-    def get(self, request):
-        filterset = FilterFile(request.query_params, queryset=FileUpload.objects.all())
-        serializer = FileUploadSerializer(instance=filterset.qs, many=True)
-        return Response(serializer.data)
+class FileUploadList(generics.ListAPIView):
+    queryset = FileUpload.objects.all()
+    serializer_class = FileUploadSerializer
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = FileUploadFilter

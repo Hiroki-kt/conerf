@@ -2,6 +2,8 @@ import fs from 'fs'
 import FormData from 'form-data'
 import { parseForm } from '../../lib/parse-forms'
 
+const ffmpeg = require('fluent-ffmpeg')
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export const config = {
@@ -15,9 +17,24 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { files, fields } = await parseForm(req)
     const f = files['file'] as any
+    const file_path = f[0].filepath
+    console.log('[POST /api/postvideo]: output file_path: ' + file_path)
+    const command = ffmpeg(file_path)
+    const thumbnail_name = file_path
+      .split('/')
+      .pop()
+      .replace(/\.[^/.]+$/, '.png')
+
+    await command.screenshots({
+      count: 1,
+      folder: '/mnt/upload',
+      filename: thumbnail_name,
+    })
+    // console.log('[POST /api/postvideo]: output thumbail: ' + thumbail)
+
     const payload = {
       title: f[0].originalFilename,
-      file: f[0].filepath,
+      file: file_path,
       job: Number(fields['job_id']),
     }
     console.log(`[POST /api/postvideo] payload: ${JSON.stringify(payload)}`)

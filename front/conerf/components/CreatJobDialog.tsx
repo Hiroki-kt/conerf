@@ -7,7 +7,9 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import IconButton from '@mui/material/IconButton'
 
+import CloseIcon from '@mui/icons-material/Close'
 import Diversity3Icon from '@mui/icons-material/Diversity3'
 import SubtitlesIcon from '@mui/icons-material/Subtitles'
 import TitleIcon from '@mui/icons-material/Title'
@@ -67,9 +69,27 @@ const CreateJobDialog = () => {
       >
         Create
       </button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create</DialogTitle>
-        <DialogContent>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            backgroundColor: '#2d3748',
+            color: '#fff',
+            borderRadius: '10px',
+          },
+        }}
+        className='w-full'
+      >
+        <DialogTitle>
+          <div className='flex justify-between'>
+            <div className='text-2xl'>Create Job</div>
+            <IconButton aria-label='close' onClick={handleClose}>
+              <CloseIcon className='' />
+            </IconButton>
+          </div>
+        </DialogTitle>
+        <DialogContent className='mt-5 bt-5 w-[500px]'>
           <Controller
             name='title'
             control={control}
@@ -86,10 +106,9 @@ const CreateJobDialog = () => {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name='description'
             control={control}
-            // rules={{ required: '出欠を選択してください。' }}
             render={({ field }) => (
               <DefaultFormInput
                 placeholder='Description'
@@ -117,10 +136,14 @@ const CreateJobDialog = () => {
                 helperText={errors.description && errors.description.message}
               />
             )}
-          />
+          /> */}
         </DialogContent>
-        <DialogActions>
-          <button className='' type='submit' onClick={handleSubmit(PostJob)}>
+        <DialogActions className='px-5 mb-2 pt-0'>
+          <button
+            className='bg-blue-500 text-white rounded-full py-3 px-5'
+            type='submit'
+            onClick={handleSubmit(PostJob)}
+          >
             Create
           </button>
         </DialogActions>
