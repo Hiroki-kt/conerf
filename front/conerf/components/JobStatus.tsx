@@ -5,6 +5,9 @@ import { useEffect, useState, useRef } from 'react'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import TitleIcon from '@mui/icons-material/Title'
+
+import DefaultFormInput from '@/components/DefaultFormInput'
 
 type JobStatusProps = {
   status: string
@@ -22,6 +25,7 @@ const JobStatus = (props: JobStatusProps) => {
   const [statusOpen3, setStatusOpen3] = useState(false)
   const [statusOpen4, setStatusOpen4] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [renderCommand, setRenderCommand] = useState('')
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   // useEffect(() => {
@@ -66,8 +70,9 @@ const JobStatus = (props: JobStatusProps) => {
       },
       body: JSON.stringify({ job_id: jobId }),
     })
-    const data = await res.json()
-    console.log(data)
+    // const data = await res.json()
+    console.log(res.status)
+    // console.log(data)
     setStatus('2')
   }
 
@@ -82,8 +87,10 @@ const JobStatus = (props: JobStatusProps) => {
       },
       body: JSON.stringify({ job_id: jobId }),
     })
-    const data = await res.json()
-    console.log(data)
+    // const data = await res.json()
+    // console.log(data)
+    console.log(res.status)
+    setStatus('4')
   }
 
   const runTrain = async () => {
@@ -97,8 +104,10 @@ const JobStatus = (props: JobStatusProps) => {
       },
       body: JSON.stringify({ job_id: jobId }),
     })
-    const data = await res.json()
-    console.log(data)
+    // const data = await res.json()
+    // console.log(data)
+    console.log(res.status)
+    setStatus('6')
   }
 
   const runViewer = async () => {
@@ -112,8 +121,25 @@ const JobStatus = (props: JobStatusProps) => {
       },
       body: JSON.stringify({ job_id: jobId }),
     })
-    const data = await res.json()
-    console.log(data)
+    // const data = await res.json()
+    // console.log(data)
+    console.log(res.status)
+  }
+
+  const runRender = async () => {
+    console.log('runRender')
+    console.log(jobId)
+    const url = '/api/runrender'
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ job_id: jobId, command: renderCommand }),
+    })
+    // const data = await res.json()
+    // console.log(data)
+    console.log(res.status)
   }
 
   const getFileList = async () => {
@@ -203,7 +229,7 @@ const JobStatus = (props: JobStatusProps) => {
                 {files.length != 0 && (
                   <div className='flex flex-wrap gap-x-4 gap-y-2 bg-gray-800 rounded-xl p-5 shadow-2xl my-5'>
                     {files.map((file: any) => {
-                      const thumbnail = file.file.replace(/\.[^/.]+$/, '.png')
+                      const thumbnail = file.file.replace(/\.[^/.]+$/, '.jpg')
                       const thumbnailUrl = `http://localhost:8000/${thumbnail.replace(
                         '/mnt',
                         'media'
@@ -390,7 +416,7 @@ const JobStatus = (props: JobStatusProps) => {
             <div className='flex flex-col items-center justify-center text-gray-300 mt-2 px-4 py-2 rounded-xl bg-gray-700'>
               <div className='flex justify-center'>
                 <button
-                  className='w-[300px] h-[70px] mt-5 px-4 py-2 rounded-full bg-blue-700'
+                  className='w-[300px] h-[70px] mt-5 px-4 py-2 rounded-full bg-blue-900'
                   onClick={runViewer}
                 >
                   Viewerを起動
@@ -410,6 +436,26 @@ const JobStatus = (props: JobStatusProps) => {
                   こちら
                 </a>
                 から確認できます。
+              </div>
+              <div className='flex justify-center'>
+                <ArrowDropDownIcon className='text-white text-8xl' />
+              </div>
+              <DefaultFormInput
+                placeholder='コマンド入力'
+                type='text'
+                value={renderCommand}
+                onChange={(e) => {
+                  setRenderCommand(e.target.value)
+                }}
+                startAdornment={<TitleIcon />}
+              />
+              <div className='flex justify-center'>
+                <button
+                  className='w-[300px] h-[70px] mt-5 px-4 py-2 rounded-full bg-blue-900'
+                  onClick={runRender}
+                >
+                  レンダリング実行
+                </button>
               </div>
             </div>
           </div>

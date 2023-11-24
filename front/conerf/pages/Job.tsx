@@ -39,6 +39,13 @@ const Job = (props: JobProps) => {
           </a>
           <div className='text-xl ml-3'>{job.title}</div>
         </div>
+        {job.output_movie != '' && (
+          <video
+            src={`http://localhost:8000/${job.output_movie}`}
+            className='w-full mb-5'
+            controls
+          ></video>
+        )}
         {job.length != 0 && <JobStatus status={job.status} jobId={props.id} />}
       </div>
     </main>

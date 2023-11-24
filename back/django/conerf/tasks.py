@@ -1,3 +1,4 @@
+from glob import glob
 import os
 import subprocess
 
@@ -55,18 +56,33 @@ def train(job_id: str) -> None:
 
 
 @shared_task
-def viwer(job_id: str, time_stamp: str) -> None:
-    print("viwer")
-    queryset = Job.objects.all()
-    job = get_object_or_404(queryset, id=job_id)
-    job.select_job = True
-    job.save()
+def viewer(job_id: SyntaxError) -> None:
+    print("viewer")
+    # queryset = Job.objects.all()
+    # job = get_object_or_404(queryset, id=job_id)
+    # job.select_job = True
+    # job.save()
+    for file in glob(f"/mnt/outputs/{job_id}/nerfacto/*"):
+        if os.path.isdir(file):
+            time_stamp = os.path.basename(file)
     command = f"docker run --name=viewer_{job_id} --gpus all -u 1000 -v /home/hiro/wd/conerf:/workspace/ -v /home/hiro/.cache/:/home/user/.cache/ -p 7007:7007 --rm -it --shm-size=12gb nerfstudio-89 ns-viewer --load-config /workspace/outputs/{job_id}/nerfacto/{time_stamp}/config.yml"
     subprocess.call(command, shell=True)
 
 
 @shared_task
-def delete_container(job_id: str, job_type: str) -> None:
+def render(job_id: str, ns_command: str) -> None:
+    print("render")
+    command = f"docker run --name=render --gpus all -u 1000 -v /home/hiro/wd/conerf:/workspace/ -v /home/hiro/.cache/:/home/user/.cache/ -p 7007:7007 --rm -it --shm-size=12gb nerfstudio-89 {ns_command}"
+    subprocess.call(command, shell=True)
+    output_path = ns_command.split(" ")[-1]
+    queryset = Job.objects.all()
+    job = get_object_or_404(queryset, id=job_id)
+    job.output_movie = f"media/{output_path}"
+    job.save()
+
+
+@shared_task
+def stop_container(job_id: str, job_type: str) -> None:
     print("delete")
     stop_command = f"docker stop {job_type}_{job_id}"
     subprocess.call(stop_command, shell=True)

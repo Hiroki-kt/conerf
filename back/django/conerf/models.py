@@ -33,6 +33,7 @@ class Job(models.Model):
         max_length=200, blank=True, default="static/images/noimage.png"
     )
     participants = models.IntegerField(default=0)
+    output_movie = models.CharField(max_length=200, blank=True, default="")
 
 
 class FileUpload(models.Model):

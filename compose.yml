@@ -22,7 +22,7 @@ services:
     tty: true
     volumes:
       - ./back/django:/app
-      - ${MNT}:/MNT
+      - ${MNT}:/mnt
     ports:
       - '8000:8000'
     depends_on:

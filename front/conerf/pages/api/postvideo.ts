@@ -23,7 +23,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     const thumbnail_name = file_path
       .split('/')
       .pop()
-      .replace(/\.[^/.]+$/, '.png')
+      .replace(/\.[^/.]+$/, '.jpg')
 
     await command.screenshots({
       count: 1,

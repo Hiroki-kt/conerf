@@ -10,7 +10,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .tasks import ffmpeg, colmap, train, viwer
+from .tasks import ffmpeg, colmap, train, viewer, stop_container, render
 from .lib import GoogleDriveAccess
 from .models import Job, FileUpload
 from .serializers import JobSerializer, FileUploadSerializer
@@ -67,6 +67,32 @@ class JobViewSet(viewsets.ModelViewSet):
         job.status = "6"
         job.save()
         train.delay(pk)
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def viewer(self, request, pk=None):
+        queryset = Job.objects.all()
+        job = get_object_or_404(queryset, id=pk)
+        job.status = "6"
+        job.save()
+        viewer.delay(pk)
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def stop_container(self, request, pk=None):
+        if "query_param" in request.GET:
+            # query_paramが指定されている場合の処理
+            job_type = request.GET.get("job_type")
+            stop_container.delay(pk, job_type)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            # query_paramが指定されていない場合の処理
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["post"])
+    def render(self, request, pk=None):
+        ns_command = request.data["command"]
+        render.delay(pk, ns_command)
         return Response(status=status.HTTP_200_OK)
 
 
