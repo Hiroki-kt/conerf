@@ -34,6 +34,7 @@ class Job(models.Model):
     )
     participants = models.IntegerField(default=0)
     output_movie = models.CharField(max_length=200, blank=True, default="")
+    trained_path = models.CharField(max_length=200, blank=True, default="")
 
 
 class FileUpload(models.Model):

@@ -37,6 +37,15 @@ class JobViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
+    def run_all(self, request, pk=None):
+        queryset = Job.objects.all()
+        job = get_object_or_404(queryset, id=pk)
+        job.status = "2"
+        job.save()
+        ffmpeg.delay(pk, framerate=5, next_step=True)
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
     def ffmpeg(self, request, pk=None):
         ## TODO: framerateをrequestから受け取る
         # if request.data["framerate"]:
@@ -72,10 +81,17 @@ class JobViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def viewer(self, request, pk=None):
         queryset = Job.objects.all()
+        # selected_job = get_object_or_404(queryset, select_job=True)
+        # selected_jobがある場合は、エラーを返す。
+        # if selected_job:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
         job = get_object_or_404(queryset, id=pk)
-        job.status = "6"
+        trained_path = job.trained_path
+        if not trained_path:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        job.select_job = True
         job.save()
-        viewer.delay(pk)
+        viewer.delay(pk, trained_path)
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])

@@ -60,9 +60,10 @@ const JobStatus = (props: JobStatusProps) => {
   }
 
   const runFfmpeg = async () => {
-    console.log('runFfmpeg')
+    console.log('runall')
     console.log(jobId)
-    const url = '/api/runffmpeg'
+    // const url = '/api/runffmpeg'
+    const url = '/api/runall'
     const res = await fetch(url, {
       method: 'POST',
       headers: {
