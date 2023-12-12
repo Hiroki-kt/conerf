@@ -27,6 +27,8 @@ const JobStatus = (props: JobStatusProps) => {
   const [loading, setLoading] = useState(false)
   const [renderCommand, setRenderCommand] = useState('')
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [viewerStatus, setViewerStatus] = useState(false)
+  const [trainViewerStatus, setTrainViewerStatus] = useState(false)
 
   // useEffect(() => {
   //   setStatus(props.status)
@@ -143,6 +145,50 @@ const JobStatus = (props: JobStatusProps) => {
     console.log(res.status)
   }
 
+  const getContainers = async () => {
+    console.log('getContainers')
+    const url = '/api/getcontainers'
+    const res = await fetch(url)
+    const data = await res.json()
+    console.log('getContainers')
+    console.log(data.data.data)
+    const containers = data.data.data
+    for (const cid in containers) {
+      // console.log(cid)
+      // console.log(containers[cid].split('_')[1])
+      // console.log(jobId)
+      if (containers[cid].split('_')[1] == jobId) {
+        // console.log('match')
+        if (cid == 'train') {
+          setTrainViewerStatus(true)
+          console.log(trainViewerStatus)
+        } else if (cid == 'viewer') {
+          console.log('viewer')
+          setViewerStatus(true)
+          console.log(viewerStatus)
+        }
+      }
+      // console.log(viewerStatus)
+      // console.log(trainViewerStatus)
+    }
+  }
+
+  const stopContainer = async (containerType: string) => {
+    console.log('stopContainer')
+    console.log(jobId)
+    const url = '/api/stopcontainer'
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ job_id: jobId, job_type: containerType }),
+    })
+    // const data = await res.json()
+    // console.log(data)
+    console.log(res.status)
+  }
+
   const getFileList = async () => {
     console.log('getFilelist')
     const url = `/api/getfiles?job_id=${jobId}`
@@ -177,6 +223,7 @@ const JobStatus = (props: JobStatusProps) => {
 
   useEffect(() => {
     getFileList()
+    getContainers()
   }, [])
 
   return (
@@ -373,7 +420,7 @@ const JobStatus = (props: JobStatusProps) => {
             )}
             {status == '6' && (
               <div className='my-5 w-full m-auto rounded-3xl bg-gray-900 p-5'>
-                <div className='flex items-center justify-center text-gray-300 mt-2 px-4 py-2 h-[150px] rounded-xl bg-gray-700'>
+                <div className='flex flex-col items-center justify-center text-gray-300 mt-2 px-4 py-2 h-[150px] rounded-xl bg-gray-700'>
                   NeRF学習を実行中... <br />
                   この処理には30分 ~ 1時間程度かかります。
                   <br />
@@ -390,6 +437,16 @@ const JobStatus = (props: JobStatusProps) => {
                     から確認できます。
                   </div>
                 </div>
+                {trainViewerStatus && (
+                  <div className='flex justify-center'>
+                    <button
+                      className='w-[300px] h-[70px] mt-5 px-4 py-2 rounded-full bg-blue-700'
+                      onClick={() => stopContainer('train')}
+                    >
+                      学習を終了
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -438,6 +495,16 @@ const JobStatus = (props: JobStatusProps) => {
                 </a>
                 から確認できます。
               </div>
+              {viewerStatus && (
+                <div className='flex justify-center'>
+                  <button
+                    className='w-[300px] h-[70px] mt-5 px-4 py-2 rounded-full bg-blue-900'
+                    onClick={() => stopContainer('viewer')}
+                  >
+                    Viewerを終了
+                  </button>
+                </div>
+              )}
               <div className='flex justify-center'>
                 <ArrowDropDownIcon className='text-white text-8xl' />
               </div>

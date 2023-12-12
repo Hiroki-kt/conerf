@@ -4,6 +4,7 @@ import subprocess
 
 from django_filters import rest_framework as filters
 from django.shortcuts import get_object_or_404
+import docker
 from rest_framework import viewsets, status, generics
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -42,7 +43,7 @@ class JobViewSet(viewsets.ModelViewSet):
         job = get_object_or_404(queryset, id=pk)
         job.status = "2"
         job.save()
-        ffmpeg.delay(pk, framerate=5, next_step=True)
+        ffmpeg.delay(pk, framerate=15, next_step=True)
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
@@ -52,12 +53,12 @@ class JobViewSet(viewsets.ModelViewSet):
         #     framerate = request.data["framerate"]
         # else:
         #     framerate = 5
-        framerate = 5
+        framerate = 15
         queryset = Job.objects.all()
         job = get_object_or_404(queryset, id=pk)
         job.status = "2"
         job.save()
-        ffmpeg.delay(pk, framerate)
+        ffmpeg.delay(pk, framerate=framerate)
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
@@ -96,20 +97,35 @@ class JobViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def stop_container(self, request, pk=None):
-        if "query_param" in request.GET:
-            # query_paramが指定されている場合の処理
-            job_type = request.GET.get("job_type")
-            stop_container.delay(pk, job_type)
-            return Response(status=status.HTTP_200_OK)
-        else:
-            # query_paramが指定されていない場合の処理
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        job_type = request.query_params.get("job_type")
+        client = docker.from_env()
+        container = client.containers.get(f"{job_type}_{pk}")
+        container.stop()
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def render(self, request, pk=None):
         ns_command = request.data["command"]
         render.delay(pk, ns_command)
         return Response(status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["get"])
+    def dockerps(self, request):
+        client = docker.from_env()
+        containers = client.containers.list()
+        nerf_containers = {}
+        for container in containers:
+            print(container.id, container.name)
+            if "train" in container.name:
+                print(f"train: {container.id}")
+                nerf_containers["train"] = container.name
+            elif "colmap" in container.name:
+                print(f"colmap: {container.id}")
+                nerf_containers["colmap"] = container.name
+            elif "viewer" in container.name:
+                print(f"viewer: {container.id}")
+                nerf_containers["viewer"] = container.name
+        return Response(status=status.HTTP_200_OK, data={"data": nerf_containers})
 
 
 class FileUploadViewSet(viewsets.ModelViewSet):
